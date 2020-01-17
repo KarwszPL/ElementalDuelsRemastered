@@ -1,0 +1,14 @@
+name: ElementalDuels
+version: 1.0
+main: pl.KarwszPL.Avatarserv.ElementalDuels.ElementalDuels
+author: KarwszPL
+commands:
+  CreateArena:
+    description: Create arena
+  ArenaList:
+    description: Arena list
+  ArenaTeleport:
+    description: Arena teleport
+  DeleteArena:
+    description: Delete arena
+depend: [ProjectKorra]
