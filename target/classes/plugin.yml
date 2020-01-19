@@ -11,4 +11,6 @@ commands:
     description: Arena teleport
   DeleteArena:
     description: Delete arena
+  DuelQueue:
+    description: Duel queue
 depend: [ProjectKorra]

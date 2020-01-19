@@ -6,10 +6,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pl.KarwszPL.Avatarserv.ElementalDuels.ArenaStorage.ArenaLoader;
 import pl.KarwszPL.Avatarserv.ElementalDuels.ArenaStorage.ArenaStorage;
 import pl.KarwszPL.Avatarserv.ElementalDuels.ArenaStorage.ArenaUtils;
-import pl.KarwszPL.Avatarserv.ElementalDuels.Commands.ArenaList;
-import pl.KarwszPL.Avatarserv.ElementalDuels.Commands.ArenaTeleport;
-import pl.KarwszPL.Avatarserv.ElementalDuels.Commands.CreateArena;
-import pl.KarwszPL.Avatarserv.ElementalDuels.Commands.DeleteArena;
+import pl.KarwszPL.Avatarserv.ElementalDuels.Commands.*;
+import pl.KarwszPL.Avatarserv.ElementalDuels.Listeners.IllegalSpellListener;
+import pl.KarwszPL.Avatarserv.ElementalDuels.Listeners.PlayerDeathQuitListener;
 import pl.KarwszPL.Avatarserv.ElementalDuels.Objects.Arena;
 
 public final class ElementalDuels extends JavaPlugin {
@@ -24,7 +23,11 @@ public final class ElementalDuels extends JavaPlugin {
         Bukkit.getPluginCommand("ArenaList").setExecutor(new ArenaList());
         Bukkit.getPluginCommand("ArenaTeleport").setExecutor(new ArenaTeleport());
         Bukkit.getPluginCommand("DeleteArena").setExecutor(new DeleteArena());
+        Bukkit.getPluginCommand("DuelQueue").setExecutor(new DuelQueue());
         Bukkit.getPluginManager().registerEvents(new ArenaLoader(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerDeathQuitListener(), this);
+        Bukkit.getPluginManager().registerEvents(new IllegalSpellListener(), this);
+        DuelQueue.startQueue();
 
     }
 

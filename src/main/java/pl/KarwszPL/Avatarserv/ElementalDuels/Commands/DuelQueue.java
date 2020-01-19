@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 public class DuelQueue implements CommandExecutor {
 
-    private static HashMap<Player, String> queue = new HashMap<>();
+    public static HashMap<Player, String> queue = new HashMap<>();
 
     public static void startQueue() {
         new BukkitRunnable() {
@@ -21,11 +21,14 @@ public class DuelQueue implements CommandExecutor {
             public void run() {
                 for (Player player : queue.keySet()) {
 
-                    if (Arena.getPlayerArena(player) != null) return;
-
+                    if (Arena.getPlayerArena(player) != null) {
+                        queue.remove(player);
+                        return;
+                    }
                     if (Arena.getAvailableArena(queue.get(player)) == null) return;
                     String arena = Arena.getAvailableArena(queue.get(player));
                     Arena.addPlayer(arena, player);
+
 
 
                 }
@@ -104,7 +107,7 @@ public class DuelQueue implements CommandExecutor {
             return "Spirit";
         }
         
-        return "Unkown";
+        return "Unknown";
     }
     
     
