@@ -8,8 +8,11 @@ import pl.KarwszPL.Avatarserv.ElementalDuels.ArenaStorage.ArenaStorage;
 import pl.KarwszPL.Avatarserv.ElementalDuels.ArenaStorage.ArenaUtils;
 import pl.KarwszPL.Avatarserv.ElementalDuels.Commands.*;
 import pl.KarwszPL.Avatarserv.ElementalDuels.Listeners.IllegalSpellListener;
+import pl.KarwszPL.Avatarserv.ElementalDuels.Listeners.JoinQuitStatistics;
 import pl.KarwszPL.Avatarserv.ElementalDuels.Listeners.PlayerDeathQuitListener;
 import pl.KarwszPL.Avatarserv.ElementalDuels.Objects.Arena;
+import pl.KarwszPL.Avatarserv.ElementalDuels.Objects.PlayerStatistics;
+import pl.KarwszPL.Avatarserv.ElementalDuels.StatisticsStorage.StatisticsStorage;
 
 public final class ElementalDuels extends JavaPlugin {
 
@@ -18,15 +21,18 @@ public final class ElementalDuels extends JavaPlugin {
     public void onEnable() {
 
         ArenaStorage.createConfig();
+        StatisticsStorage.createConfig();
 
         Bukkit.getPluginCommand("CreateArena").setExecutor(new CreateArena());
         Bukkit.getPluginCommand("ArenaList").setExecutor(new ArenaList());
         Bukkit.getPluginCommand("ArenaTeleport").setExecutor(new ArenaTeleport());
         Bukkit.getPluginCommand("DeleteArena").setExecutor(new DeleteArena());
         Bukkit.getPluginCommand("DuelQueue").setExecutor(new DuelQueue());
+        Bukkit.getPluginCommand("Statistics").setExecutor(new Statistics());
         Bukkit.getPluginManager().registerEvents(new ArenaLoader(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeathQuitListener(), this);
         Bukkit.getPluginManager().registerEvents(new IllegalSpellListener(), this);
+        Bukkit.getPluginManager().registerEvents(new JoinQuitStatistics(), this);
         DuelQueue.startQueue();
 
     }

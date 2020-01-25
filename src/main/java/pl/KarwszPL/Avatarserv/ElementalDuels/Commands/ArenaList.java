@@ -18,6 +18,11 @@ public class ArenaList implements CommandExecutor {
 
         Player player = (Player) sender;
 
+        if (!player.hasPermission("ElementalDuels.ArenaList")) {
+            player.sendMessage(ChatColor.RED + "Niewystarczajace uprawnienia!");
+            return false;
+        }
+
         StringBuilder stringBuilder = new StringBuilder();
 
         for (Arena arena : Arena.arenaArrayList) {

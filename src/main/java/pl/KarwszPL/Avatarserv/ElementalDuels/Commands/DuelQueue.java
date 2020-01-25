@@ -7,9 +7,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import pl.KarwszPL.Avatarserv.ElementalDuels.ElementalDuels;
 import pl.KarwszPL.Avatarserv.ElementalDuels.Objects.Arena;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class DuelQueue implements CommandExecutor {
 
@@ -19,16 +21,21 @@ public class DuelQueue implements CommandExecutor {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (Player player : queue.keySet()) {
 
-                    if (Arena.getPlayerArena(player) != null) {
-                        queue.remove(player);
-                        return;
+                for (Iterator<Player> playerIterator = queue.keySet().iterator(); playerIterator.hasNext();) {
+
+                    Player player = playerIterator.next();
+
+                    if (Arena.getPlayerArena(player) == null) {
+                        String arena = Arena.getAvailableReadyArena(queue.get(player));
+                        if (arena == null) {
+                            arena = Arena.getAvailableArena(queue.get(player));
+                        }
+                        if (arena != null) {
+                            Arena.addPlayer(arena, player);
+                        }
                     }
-                    if (Arena.getAvailableArena(queue.get(player)) == null) return;
-                    String arena = Arena.getAvailableArena(queue.get(player));
-                    Arena.addPlayer(arena, player);
-
+                    else playerIterator.remove();
 
 
                 }
@@ -47,8 +54,13 @@ public class DuelQueue implements CommandExecutor {
 
         Player player = (Player) sender;
 
+        if (!player.hasPermission("ElementalDuels.DuelQueue")) {
+            player.sendMessage(ChatColor.RED + "Niewystarczajace uprawnienia!");
+            return false;
+        }
+
         if (args.length == 0) {
-            player.sendMessage(ChatColor.RED + "Podaj pierwsza litere z nazwy zywiolu do ktorego kolejki chcesz dolaczyc!");
+            player.sendMessage(ChatColor.RED + "Podaj pierwsza litere z nazwy zywiolu do ktorego kolejki chcesz dolaczyc! (Quit aby wyjsc)");
             return false;
         }
 
@@ -73,12 +85,22 @@ public class DuelQueue implements CommandExecutor {
         else if (args[0].equalsIgnoreCase("S")) {
             player.sendMessage(ChatColor.DARK_AQUA + "Dolaczono do kolejki duchow!");
         }
+        else if (args[0].equalsIgnoreCase("Quit")) {
+            player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Wyszedles z kolejki!");
+            queue.remove(player);
+            Arena.removePlayerFromArenas(player);
+            return false;
+        }
         else {
             player.sendMessage(ChatColor.RED + "Niepoprawny element!");
             return false;
         }
-
-        queue.put(player, commandElementToElementName(args[0]));
+        queue.remove(player);
+        new BukkitRunnable() {
+            public void run() {
+                queue.put(player, commandElementToElementName(args[0]));
+            }
+        }.runTaskLater(ElementalDuels.getPlugin(), 1);
         return false;
     }
     
@@ -103,7 +125,7 @@ public class DuelQueue implements CommandExecutor {
         else if (string.equalsIgnoreCase("C")) {
             return "Chi";
         }
-        else if (string.equalsIgnoreCase("S")) {
+        else if (string.equalsIgnoreCase("D")) {
             return "Spirit";
         }
         

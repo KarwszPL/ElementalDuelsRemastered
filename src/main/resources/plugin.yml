@@ -12,5 +12,7 @@ commands:
   DeleteArena:
     description: Delete arena
   DuelQueue:
-    description: Duel queue
+    description: Duels queue
+  Statistics:
+    description: Player duels statistics
 depend: [ProjectKorra]

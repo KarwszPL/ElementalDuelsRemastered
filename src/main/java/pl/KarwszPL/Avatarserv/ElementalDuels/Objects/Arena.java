@@ -10,6 +10,7 @@ import pl.KarwszPL.Avatarserv.ElementalDuels.Commands.DuelQueue;
 import pl.KarwszPL.Avatarserv.ElementalDuels.Listeners.IllegalSpellListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Arena {
 
@@ -23,7 +24,7 @@ public class Arena {
 
     public static ArrayList<Arena> arenaArrayList = new ArrayList<>();
 
-    public Arena(String name, Location position, Location position1, String element){
+    public Arena(String name, Location position, Location position1, String element) {
         this.name = name;
         this.position = position;
         this.position1 = position1;
@@ -33,7 +34,7 @@ public class Arena {
         this.player1 = null;
     }
 
-    public static void addArena(Arena arena){
+    public static void addArena(Arena arena) {
         Arena.arenaArrayList.add(arena);
     }
 
@@ -50,7 +51,7 @@ public class Arena {
         for (Arena arena : arenaArrayList) {
             if (arena.name.equalsIgnoreCase(name)) {
                 switch (i) {
-                    case(1):
+                    case (1):
                         return arena.position;
                     case (2):
                         return arena.position1;
@@ -72,20 +73,6 @@ public class Arena {
         }
     }
 
-    public static void setInUse(String name, Boolean inUse) {
-
-        for (Arena arena : arenaArrayList) {
-            if (arena.name.equalsIgnoreCase(name)) {
-                arenaArrayList.remove(arena);
-                arena.inUse = inUse;
-                arenaArrayList.add(arena);
-            }
-        }
-
-
-    }
-
-
 
     private static String getAllowedElements(String name) {
 
@@ -95,7 +82,7 @@ public class Arena {
                     case ("Fire"):
                         return "Fire, Lightning, Combustion";
                     case ("Air"):
-                        return "Air, Spiritual";
+                        return "Air, Flight, Spiritual";
                     case ("Water"):
                         return "Water, Ice, Healing, Plant, Blood";
                     case ("Earth"):
@@ -114,7 +101,16 @@ public class Arena {
     }
 
 
-    public static String getAvailableArena(String element){
+    public static String getAvailableReadyArena(String element) {
+        for (Arena arena : arenaArrayList) {
+            if (arena.element.equalsIgnoreCase(element) && !arena.inUse && arena.player != null) {
+                return arena.name;
+            }
+        }
+        return null;
+    }
+
+    public static String getAvailableArena(String element) {
         for (Arena arena : arenaArrayList) {
             if (arena.element.equalsIgnoreCase(element) && !arena.inUse) {
                 return arena.name;
@@ -123,14 +119,21 @@ public class Arena {
         return null;
     }
 
+    public static String getPlayerArenaElement(Player player) {
+        for (Arena arena : arenaArrayList) {
+            if (arena.player == player || arena.player1 == player) {
+                return arena.element;
+            }
+        }
+        return "Unknown";
+    }
 
     public static void addPlayer(String name, Player player) {
 
-        for (Arena arena : arenaArrayList) {
-            new BukkitRunnable() {
-                public void run() {
+        for (Iterator<Arena> arenaIterator = arenaArrayList.iterator(); arenaIterator.hasNext();) {
+            Arena arena = arenaIterator.next();
                     if (arena.name.equalsIgnoreCase(name)) {
-                        arenaArrayList.remove(arena);
+                        arenaIterator.remove();
                         if (arena.player == null) arena.player = player;
                         else {
                             arena.player1 = player;
@@ -141,20 +144,39 @@ public class Arena {
                         arenaArrayList.add(arena);
                     }
                 }
-            }.runTaskLater(Bukkit.getPluginManager().getPlugin("ElementalDuels"), 1);
         }
 
-    }
 
     public static void removePlayerFromArenas(Player player) {
-        for (Arena arena : arenaArrayList) {
+
+        for (Iterator<Arena> arenaIterator = arenaArrayList.iterator(); arenaIterator.hasNext();) {
+            Arena arena = arenaIterator.next();
             if (arena.player == player) {
-                arenaArrayList.remove(arena);
+                arenaIterator.remove();
                 arena.player = arena.player1;
                 arena.player1 = null;
                 arenaArrayList.add(arena);
             }
         }
+
+    }
+
+
+    public static void restartArena(String arenaName){
+
+        for (Iterator<Arena> arenaIterator = arenaArrayList.iterator(); arenaIterator.hasNext();) {
+
+            Arena arena = arenaIterator.next();
+            if (arenaName.equalsIgnoreCase(arena.name)) {
+                arenaIterator.remove();
+                arena.player = null;
+                arena.player1 = null;
+                arena.inUse = false;
+                arenaArrayList.add(arena);
+            }
+
+        }
+
     }
 
 
@@ -205,7 +227,7 @@ public class Arena {
                 player.sendTitle(ChatColor.GREEN + "3", "");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_HARP, 1 ,1);
                 player1.sendTitle(ChatColor.GREEN + "3", "");
-                player1.playSound(player.getLocation(), Sound.BLOCK_NOTE_HARP, 1 ,1);
+                player1.playSound(player1.getLocation(), Sound.BLOCK_NOTE_HARP, 1 ,1);
             }
         }.runTaskLater(Bukkit.getPluginManager().getPlugin("ElementalDuels"), 20);
 
@@ -214,7 +236,7 @@ public class Arena {
                 player.sendTitle(ChatColor.GREEN + "2", "");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_HARP, 1 ,1);
                 player1.sendTitle(ChatColor.GREEN + "2", "");
-                player1.playSound(player.getLocation(), Sound.BLOCK_NOTE_HARP, 1 ,1);
+                player1.playSound(player1.getLocation(), Sound.BLOCK_NOTE_HARP, 1 ,1);
             }
         }.runTaskLater(Bukkit.getPluginManager().getPlugin("ElementalDuels"), 40);
 
@@ -223,7 +245,7 @@ public class Arena {
                 player.sendTitle(ChatColor.GREEN + "1", "");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_HARP, 1 ,1);
                 player1.sendTitle(ChatColor.GREEN + "1", "");
-                player1.playSound(player.getLocation(), Sound.BLOCK_NOTE_HARP, 1 ,1);
+                player1.playSound(player1.getLocation(), Sound.BLOCK_NOTE_HARP, 1 ,1);
             }
         }.runTaskLater(Bukkit.getPluginManager().getPlugin("ElementalDuels"), 60);
 
@@ -232,7 +254,7 @@ public class Arena {
                 player.sendTitle(ChatColor.GREEN + "START!", "");
                 player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 1 ,1);
                 player1.sendTitle(ChatColor.GREEN + "START!", "");
-                player1.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 1 ,1);
+                player1.playSound(player1.getLocation(), Sound.ENTITY_WITHER_DEATH, 1 ,1);
                 IllegalSpellListener.players.remove(player);
                 IllegalSpellListener.players.remove(player1);
             }

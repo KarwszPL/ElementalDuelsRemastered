@@ -14,7 +14,6 @@ public class ArenaLoader implements Listener {
 
                 if (!Arena.getArenaExist(string)) {
                     Arena.addArena(ArenaUtils.stringToArena(ArenaStorage.getArenaStorage().getString(string)));
-                    System.out.println(ArenaStorage.getArenaStorage().getString(string));
                 }
 
             }

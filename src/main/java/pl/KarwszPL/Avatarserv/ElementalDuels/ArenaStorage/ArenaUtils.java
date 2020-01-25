@@ -12,7 +12,7 @@ public class ArenaUtils {
         return arena.name + "->" + locationToString(arena.position) + "->" + locationToString(arena.position1) + "->" + arena.element;
     }
 
-    public static Arena stringToArena(String string) {
+    static Arena stringToArena(String string) {
 
         if (!string.contains("->")) return null;
 

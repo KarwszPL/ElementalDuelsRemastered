@@ -3,7 +3,6 @@
     <output-path>$PROJECT_DIR$/../../Programowanie/Serwer testowy/plugins</output-path>
     <root id="archive" name="ElementalDuelsRemastered.jar">
       <element id="module-output" name="ElementalDuelsRemastered" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/../../Programowanie/Serwer testowy/plugins/ProjectKorra-1.8.7.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
